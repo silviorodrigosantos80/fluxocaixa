@@ -12,19 +12,13 @@ builder.Services.AddAuthorization();
 builder.Services.AddSwaggerConfiguration();
 
 builder.Services.AddApplication();
-builder.Services.AddMessaging(builder.Configuration);
+builder.Services.AddMassTransit(builder.Configuration);
 builder.Services.AddEndpoints();
 
 var app = builder.Build();
 
 app.UseGlobalExceptionHandling();
 app.UseSwaggerConfiguration();
-
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
 
 app.UseAuthentication();
 app.UseAuthorization();

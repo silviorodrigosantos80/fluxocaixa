@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace FluxoCaixa.Lancamentos.OutboxPublisher.Configurations;
-
+namespace FluxoCaixa.BuildingBlocks.Infrastructure.Messaging;
 public sealed class RabbitMqOptions
 {
     public const string SectionName = "RabbitMQ";

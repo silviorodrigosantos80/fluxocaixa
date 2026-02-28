@@ -44,6 +44,7 @@ public sealed class OutboxPublisherWorker : BackgroundService
                     .FromSqlRaw(@"
                         SELECT * FROM ""OutboxMessages""
                         WHERE ""ProcessedOn"" IS NULL
+                        AND ""IsDeadLetter"" = false
                         ORDER BY ""OccurredOn""
                         FOR UPDATE SKIP LOCKED
                         LIMIT {0}", _outboxOptions.BatchSize)
@@ -101,6 +102,7 @@ public sealed class OutboxPublisherWorker : BackgroundService
                         }
                         catch (Exception ex)
                         {
+                            message.RegisterFailure(ex.Message, _outboxOptions.MaxRetry);
                             _logger.LogError(
                                 ex,
                                 "Erro ao publicar mensagem {Id}",

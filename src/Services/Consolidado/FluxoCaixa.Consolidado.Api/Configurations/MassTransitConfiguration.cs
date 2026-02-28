@@ -1,3 +1,4 @@
+using FluxoCaixa.BuildingBlocks.Infrastructure.Messaging;
 using FluxoCaixa.Consolidado.Infrastructure.Messaging.Consumers;
 using MassTransit;
 using Microsoft.Extensions.Options;
@@ -6,7 +7,7 @@ namespace FluxoCaixa.Consolidado.Api.Configurations;
 
 public static class MassTransitConfiguration
 {
-    public static IServiceCollection AddMessaging(
+    public static IServiceCollection AddMassTransit(
         this IServiceCollection services,
         IConfiguration configuration)
     {
@@ -20,14 +21,36 @@ public static class MassTransitConfiguration
         {
             x.UsingRabbitMq((context, cfg) =>
             {
-                var options = context
+                var rabbitOptions = context
                     .GetRequiredService<IOptions<RabbitMqOptions>>()
                     .Value;
 
-                cfg.Host(options.Host, h =>
+                var mtOptions = context
+                    .GetRequiredService<IOptions<MassTransitOptions>>()
+                    .Value;
+
+                cfg.Host(rabbitOptions.Host, h =>
                 {
-                    h.Username(options.Username);
-                    h.Password(options.Password);
+                    h.Username(rabbitOptions.Username);
+                    h.Password(rabbitOptions.Password);
+                });
+
+                cfg.ReceiveEndpoint("consolidado-lancamento-criado", e =>
+                {
+                    e.PrefetchCount = (ushort)mtOptions.PrefetchCount;
+
+                    e.UseMessageRetry(r =>
+                    {
+                        r.Exponential(
+                            retryLimit: mtOptions.Retry.RetryLimit,
+                            minInterval: TimeSpan.FromMilliseconds(mtOptions.Retry.MinIntervalMs),
+                            maxInterval: TimeSpan.FromMilliseconds(mtOptions.Retry.MaxIntervalMs),
+                            intervalDelta: TimeSpan.FromMilliseconds(mtOptions.Retry.IntervalDeltaMs));
+                    });
+
+                    e.ConcurrentMessageLimit = mtOptions.ConcurrentMessageLimit;
+
+                    e.ConfigureConsumer<LancamentoCriadoConsumer>(context);
                 });
             });
         });

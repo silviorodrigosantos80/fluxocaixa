@@ -14,4 +14,6 @@ public sealed class OutboxOptions
 
     [Range(1, 64)]
     public int MaxParallelism { get; init; }
+    [Range(1, 20)]
+    public int MaxRetry { get; init; } = 5;
 }
