@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>dotnet-FluxoCaixa.Lancamentos.OutboxPublisher-a7ee7b9e-6408-4721-9679-40a7fd1c135d</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MassTransit" Version="9.0.1" />
+    <PackageReference Include="MassTransit.RabbitMQ" Version="9.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="10.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\FluxoCaixa.BuildingBlocks.Infrastructure\FluxoCaixa.BuildingBlocks.Infrastructure.csproj" />
+    <ProjectReference Include="..\FluxoCaixa.Lancamentos.Infrastructure\FluxoCaixa.Lancamentos.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\..\BuildingBlocks\FluxoCaixa.BuildingBlocks.Contracts\FluxoCaixa.BuildingBlocks.Contracts.csproj" />
+  </ItemGroup>
+</Project>

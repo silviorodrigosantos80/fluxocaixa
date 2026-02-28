@@ -1,0 +1,6 @@
+@FluxoCaixa.ApiGateway_HostAddress = http://localhost:5148
+
+GET {{FluxoCaixa.ApiGateway_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

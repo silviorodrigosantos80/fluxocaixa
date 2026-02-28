@@ -1,0 +1,148 @@
+version: '3.9'
+
+services:
+
+  # -----------------------------
+  # POSTGRES - LANCAMENTOS
+  # -----------------------------
+  postgres-lancamentos:
+    image: postgres:16
+    container_name: fluxocaixa-postgres-lancamentos
+    restart: always
+    environment:
+      POSTGRES_DB: fluxocaixa_lancamentos
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_lancamentos_data:/var/lib/postgresql/data
+    networks:
+      - fluxocaixa-network
+
+  #------------------------------
+  # POSTGRES - CONSOLIDADO
+  #------------------------------
+    postgres-consolidado:
+      image: postgres:16
+      container_name: fluxocaixa-postgres-consolidado
+      restart: always
+      environment:
+        POSTGRES_DB: fluxocaixa_consolidado
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: postgres
+      ports:
+        - "5434:5432"
+      volumes:
+        - postgres-consolidado-data:/var/lib/postgresql/data
+      networks:
+        - fluxocaixa-network
+
+  # -----------------------------
+  # POSTGRES - KEYCLOAK
+  # -----------------------------
+  postgres-keycloak:
+    image: postgres:16
+    container_name: fluxocaixa-postgres-keycloak
+    restart: always
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: keycloak
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_keycloak_data:/var/lib/postgresql/data
+    networks:
+      - fluxocaixa-network
+
+  # -----------------------------
+  # RABBITMQ
+  # -----------------------------
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: fluxocaixa-rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - fluxocaixa-network
+
+  # -----------------------------
+  # KEYCLOAK
+  # -----------------------------
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0
+    container_name: fluxocaixa-keycloak
+    restart: always
+    command: start-dev
+    environment:
+      KC_DB: postgres
+      KC_DB_URL_HOST: postgres-keycloak
+      KC_DB_URL_PORT: 5432
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: keycloak
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - "8081:8080"
+    depends_on:
+      - postgres-keycloak
+    networks:
+      - fluxocaixa-network
+
+  # -----------------------------
+  # PORTAINER
+  # -----------------------------
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: fluxocaixa-portainer
+    restart: always
+    ports:
+      - "9000:9000"
+    volumes:
+      - portainer_data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - fluxocaixa-network
+
+  #-----------------------------
+  # API LANÇAMENTOS
+  #-----------------------------
+  lancamentos-api:
+    build:
+      context: ..
+      dockerfile: src/Services/Lancamentos/FluxoCaixa.Lancamentos.Api/Dockerfile
+    container_name: fluxocaixa-lancamentos-api
+    restart: always
+    depends_on:
+      - postgres-lancamentos
+      - rabbitmq
+      - keycloak
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__LancamentosConnection: Host=postgres-lancamentos;Port=5432;Database=fluxocaixa_lancamentos;Username=postgres;Password=postgres
+      ASPNETCORE_URLS: http://+:5001
+      DOTNET_USE_POLLING_FILE_WATCHER: "true"
+    ports:
+      - "5001:5001"
+    networks:
+      - fluxocaixa-network
+# -----------------------------
+# VOLUMES (PERSISTÊNCIA)
+# -----------------------------
+volumes:
+  postgres_lancamentos_data:
+  postgres_keycloak_data:
+  rabbitmq_data:
+  portainer_data:
+
+# -----------------------------
+# NETWORK
+# -----------------------------
+networks:
+  fluxocaixa-network:
+    driver: bridge
