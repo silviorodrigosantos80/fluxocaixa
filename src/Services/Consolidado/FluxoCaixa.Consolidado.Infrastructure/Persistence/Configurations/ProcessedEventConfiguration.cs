@@ -11,7 +11,7 @@ public sealed class ProcessedEventConfiguration
     {
         builder.ToTable("ProcessedEvents");
 
-        builder.HasKey(x => x.EventId);
+        builder.HasKey(x => x.Id);
 
         builder.Property(x => x.ProcessedOn)
             .IsRequired();

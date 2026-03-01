@@ -1,15 +1,16 @@
+using FluxoCaixa.BuildingBlocks.Domain.Common;
+
 namespace FluxoCaixa.Consolidado.Domain.Entities;
 
-public sealed class ProcessedEvent
+public sealed class ProcessedEvent: AggregateRoot
 {
-    public Guid EventId { get; private set; }
     public DateTime ProcessedOn { get; private set; }
 
     private ProcessedEvent() { }
 
     public ProcessedEvent(Guid eventId)
     {
-        EventId = eventId;
+        Id = eventId;
         ProcessedOn = DateTime.UtcNow;
     }
 }

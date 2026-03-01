@@ -12,10 +12,10 @@ COPY src/BuildingBlocks ./src/BuildingBlocks
 COPY src/Services ./src/Services
 
 # Restaurar
-RUN dotnet restore src/Services/Lancamentos/FluxoCaixa.Lancamentos.Api/FluxoCaixa.Lancamentos.Api.csproj
+RUN dotnet restore src/Services/Consolidado/FluxoCaixa.Consolidado.Api/FluxoCaixa.Consolidado.Api.csproj
 
 # Publicar
-RUN dotnet publish src/Services/Lancamentos/FluxoCaixa.Lancamentos.Api/FluxoCaixa.Lancamentos.Api.csproj \
+RUN dotnet publish src/Services/Consolidado/FluxoCaixa.Consolidado.Api/FluxoCaixa.Consolidado.Api.csproj \
     -c Release -o /app/publish
 
 # -----------------------------
@@ -26,6 +26,6 @@ WORKDIR /app
 
 COPY --from=build /app/publish .
 
-EXPOSE 5001
+EXPOSE 5002
 
-ENTRYPOINT ["dotnet", "FluxoCaixa.Lancamentos.Api.dll"]
+ENTRYPOINT ["dotnet", "FluxoCaixa.Consolidado.Api.dll"]

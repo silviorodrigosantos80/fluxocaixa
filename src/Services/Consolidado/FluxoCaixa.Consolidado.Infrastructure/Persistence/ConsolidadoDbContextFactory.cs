@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace FluxoCaixa.Consolidado.Infrastructure.Persistence;
 
-public sealed class LancamentosDbContextFactory 
+public sealed class ConsolidadoDbContextFactory 
     : IDesignTimeDbContextFactory<ConsolidadoDbContext>
 {
     public ConsolidadoDbContext CreateDbContext(string[] args)

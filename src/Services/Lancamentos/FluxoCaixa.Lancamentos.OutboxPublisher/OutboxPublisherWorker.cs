@@ -69,9 +69,14 @@ public sealed class OutboxPublisherWorker : BackgroundService
                     {
                         try
                         {
+
                             if (message.Type ==
-                                typeof(LancamentoCriadoIntegrationEvent).FullName)
+                                typeof(LancamentoCriadoDomainEvent).FullName)
                             {
+                                 _logger.LogInformation(
+                                        "Processando mensagem do tipo: {Type}", 
+                                        message.Type);
+
                                 var domainEvent =
                                     JsonSerializer.Deserialize<LancamentoCriadoDomainEvent>(
                                         message.Content);
@@ -97,8 +102,9 @@ public sealed class OutboxPublisherWorker : BackgroundService
                                 await publishEndpoint.Publish(
                                     integrationEvent,
                                     token);
+                                message.MarkAsProcessed();
                             }
-                            message.MarkAsProcessed();
+                            
                         }
                         catch (Exception ex)
                         {

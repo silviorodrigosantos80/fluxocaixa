@@ -8,17 +8,9 @@ using FluxoCaixa.Lancamentos.Domain.Abstractions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddPostgres<LancamentosDbContext>(builder.Configuration, "LancamentosConnection");
+builder.Services.AddPersistence(builder.Configuration);
 
-
-//Aqui posso separar para não popular muito a Program e separar esta responsabilidade
-// Vou deixar assim por enquanto porque o projeto é pequeno mas se for evoluir, separo
-builder.Services.AddScoped<ILancamentoRepository, LancamentoRepository>();
-builder.Services.AddMediatR(cfg =>
-    cfg.RegisterServicesFromAssembly(
-        typeof(CriarLancamentoCommandHandler).Assembly));
-//====================================================================================
+builder.Services.AddApplication();
 
 builder.Services.AddJwtAuthentication(builder.Configuration);
 
@@ -32,22 +24,11 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 app.UseGlobalExceptionHandling();
-app.UseSwaggerConfiguration();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-app.UseRouting();
+app.UseSwaggerConfiguration(app.Environment);
 
 app.UseAuthentication();
 app.UseAuthorization();
-
-//Eu poderia utilizar Minimal API aqui mas vou deixar em Controller, é adequado 
-// a arquitetura que estamos montando e já deixa pronto para possível crescimento. 
+ 
 app.MapControllers();
 
 app.Run();

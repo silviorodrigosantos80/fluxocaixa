@@ -23,20 +23,20 @@ services:
   #------------------------------
   # POSTGRES - CONSOLIDADO
   #------------------------------
-    postgres-consolidado:
-      image: postgres:16
-      container_name: fluxocaixa-postgres-consolidado
-      restart: always
-      environment:
-        POSTGRES_DB: fluxocaixa_consolidado
-        POSTGRES_USER: postgres
-        POSTGRES_PASSWORD: postgres
-      ports:
-        - "5434:5432"
-      volumes:
-        - postgres-consolidado-data:/var/lib/postgresql/data
-      networks:
-        - fluxocaixa-network
+  postgres-consolidado:
+    image: postgres:16
+    container_name: fluxocaixa-postgres-consolidado
+    restart: always
+    environment:
+      POSTGRES_DB: fluxocaixa_consolidado
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres-consolidado-data:/var/lib/postgresql/data
+    networks:
+      - fluxocaixa-network
 
   # -----------------------------
   # POSTGRES - KEYCLOAK
@@ -131,11 +131,87 @@ services:
       - "5001:5001"
     networks:
       - fluxocaixa-network
+  
+  # -----------------------------
+  # OUTBOX PUBLISHER - LANÇAMENTOS
+  # -----------------------------
+  lancamentos-outbox:
+    build:
+      context: ..
+      dockerfile: src/Services/Lancamentos/FluxoCaixa.Lancamentos.OutboxPublisher/Dockerfile
+    container_name: fluxocaixa-lancamentos-outbox
+    restart: always
+    depends_on:
+      - postgres-lancamentos
+      - rabbitmq
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__LancamentosConnection: Host=postgres-lancamentos;Port=5432;Database=fluxocaixa_lancamentos;Username=postgres;Password=postgres
+      RabbitMQ__Host: rabbitmq
+      RabbitMQ__Username: guest
+      RabbitMQ__Password: guest
+      Outbox__BatchSize: 100
+      Outbox__DelayMilliseconds: 500
+      Outbox__MaxParallelism: 8
+      Outbox__MaxRetry: 5
+    networks:
+      - fluxocaixa-network
+
+  #-----------------------------
+  # API CONSOLIDADO
+  #-----------------------------
+  consolidado-api:
+    build:
+      context: ..
+      dockerfile: src/Services/Consolidado/FluxoCaixa.Consolidado.Api/Dockerfile
+    container_name: fluxocaixa-consolidado-api
+    restart: always
+    depends_on:
+      - postgres-consolidado
+      - rabbitmq
+      - keycloak
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__ConsolidadoConnection: Host=postgres-consolidado;Port=5432;Database=fluxocaixa_consolidado;Username=postgres;Password=postgres
+      ASPNETCORE_URLS: http://+:5002
+      DOTNET_USE_POLLING_FILE_WATCHER: "true"
+    ports:
+      - "5002:5002"
+    networks:
+      - fluxocaixa-network
+  
+  #-------------------------------
+  # WORKER CONSOLIDADO
+  #-------------------------------
+  consolidado-worker:
+    build:
+      context: ..
+      dockerfile: src/Services/Consolidado/FluxoCaixa.Consolidado.Worker/Dockerfile
+    container_name: fluxocaixa-consolidado-worker
+    restart: always
+    depends_on:
+      - postgres-consolidado
+      - rabbitmq
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__ConsolidadoConnection: Host=postgres-consolidado;Port=5432;Database=fluxocaixa_consolidado;Username=postgres;Password=postgres
+      RabbitMQ__Host: rabbitmq
+      RabbitMQ__Username: guest
+      RabbitMQ__Password: guest
+      MassTransit__PrefetchCount: 32
+      MassTransit__ConcurrentMessageLimit: 16
+      MassTransit__Retry__RetryLimit: 5
+      MassTransit__Retry__MinIntervalMs: 200
+      MassTransit__Retry__MaxIntervalMs: 5000
+      MassTransit__Retry__IntervalDeltaMs: 500
+    networks:
+      - fluxocaixa-network
 # -----------------------------
 # VOLUMES (PERSISTÊNCIA)
 # -----------------------------
 volumes:
   postgres_lancamentos_data:
+  postgres-consolidado-data:
   postgres_keycloak_data:
   rabbitmq_data:
   portainer_data:

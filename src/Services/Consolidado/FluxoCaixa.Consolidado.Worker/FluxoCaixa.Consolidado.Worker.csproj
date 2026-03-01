@@ -4,19 +4,20 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>dotnet-FluxoCaixa.Lancamentos.OutboxPublisher-a7ee7b9e-6408-4721-9679-40a7fd1c135d</UserSecretsId>
+    <UserSecretsId>dotnet-FluxoCaixa.Consolidado.Worker-612d91ac-ef9a-4a86-abb7-9c0a2105737f</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MassTransit" Version="8.2.3" />
-    <PackageReference Include="MassTransit.RabbitMQ" Version="8.2.3" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
     <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="10.0.3" />
+    <PackageReference Include="MassTransit" Version="8.2.3" />
+    <PackageReference Include="MassTransit.RabbitMQ" Version="8.2.3" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\FluxoCaixa.Consolidado.Application\FluxoCaixa.Consolidado.Application.csproj" />
+    <ProjectReference Include="..\FluxoCaixa.Consolidado.Infrastructure\FluxoCaixa.Consolidado.Infrastructure.csproj" />
     <ProjectReference Include="..\..\..\BuildingBlocks\FluxoCaixa.BuildingBlocks.Infrastructure\FluxoCaixa.BuildingBlocks.Infrastructure.csproj" />
-    <ProjectReference Include="..\FluxoCaixa.Lancamentos.Infrastructure\FluxoCaixa.Lancamentos.Infrastructure.csproj" />
     <ProjectReference Include="..\..\..\BuildingBlocks\FluxoCaixa.BuildingBlocks.Contracts\FluxoCaixa.BuildingBlocks.Contracts.csproj" />
   </ItemGroup>
 </Project>

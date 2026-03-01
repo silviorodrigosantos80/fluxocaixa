@@ -8,7 +8,7 @@ namespace FluxoCaixa.BuildingBlocks.Infrastructure.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddPostgres<TContext>(
+    public static IServiceCollection AddDbPostgres<TContext>(
         this IServiceCollection services,
         IConfiguration configuration, string connectionName)
         where TContext : BaseDbContext

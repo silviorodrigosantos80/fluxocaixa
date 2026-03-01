@@ -1,24 +1,28 @@
 using FluxoCaixa.BuildingBlocks.Security;
-using FluxoCaixa.Consolidado.Api.Configurations;
 using FluxoCaixa.BuildingBlocks.Web.Extensions;
+using FluxoCaixa.Consolidado.Api.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Autenticação
 builder.Services.AddJwtAuthentication(builder.Configuration);
-    
+builder.Services.AddAuthorization();
+
+// Persistência
 builder.Services.AddPersistence(builder.Configuration);
 
-builder.Services.AddAuthorization();
-builder.Services.AddSwaggerConfiguration();
+// Controllers
+builder.Services.AddControllers();
 
-builder.Services.AddApplication();
-builder.Services.AddMassTransit(builder.Configuration);
-builder.Services.AddEndpoints();
+// Swagger
+builder.Services.AddSwaggerConfiguration();
 
 var app = builder.Build();
 
+// Middleware
 app.UseGlobalExceptionHandling();
-app.UseSwaggerConfiguration();
+
+app.UseSwaggerConfiguration(app.Environment);
 
 app.UseAuthentication();
 app.UseAuthorization();

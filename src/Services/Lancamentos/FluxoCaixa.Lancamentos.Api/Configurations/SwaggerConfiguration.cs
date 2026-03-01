@@ -65,15 +65,14 @@ public static class SwaggerConfiguration
     }
 
     public static IApplicationBuilder UseSwaggerConfiguration(
-        this IApplicationBuilder app)
+        this IApplicationBuilder app,
+        IWebHostEnvironment environment)
     {
-        app.UseSwagger();
-
-        app.UseSwaggerUI(options =>
+        if (environment.IsDevelopment())
         {
-            options.SwaggerEndpoint("/swagger/v1/swagger.json", "FluxoCaixa Lancamentos v1");
-            options.RoutePrefix = string.Empty; // Swagger na raiz
-        });
+            app.UseSwagger();
+            app.UseSwaggerUI();
+        }
 
         return app;
     }

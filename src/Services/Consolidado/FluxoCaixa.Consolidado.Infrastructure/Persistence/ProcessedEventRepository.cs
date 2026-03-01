@@ -21,7 +21,7 @@ public sealed class ProcessedEventRepository
         CancellationToken cancellationToken)
     {
         return await this.DbSet
-            .AnyAsync(x => x.EventId == eventId, cancellationToken);
+            .AnyAsync(x => x.Id == eventId, cancellationToken);
     }
 
 }

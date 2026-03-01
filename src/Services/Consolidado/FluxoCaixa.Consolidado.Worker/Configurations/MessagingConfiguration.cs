@@ -1,24 +1,34 @@
 using FluxoCaixa.BuildingBlocks.Infrastructure.Messaging;
-using FluxoCaixa.Consolidado.Infrastructure.Messaging.Consumers;
+using FluxoCaixa.Consolidado.Worker.Messaging.Consumers;
 using MassTransit;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace FluxoCaixa.Consolidado.Api.Configurations;
+namespace FluxoCaixa.Consolidado.Worker.Configurations;
 
-public static class MassTransitConfiguration
+public static class MessagingConfiguration
 {
-    public static IServiceCollection AddMassTransit(
+    public static IServiceCollection AddMessaging(
         this IServiceCollection services,
         IConfiguration configuration)
     {
+        
         services
             .AddOptions<RabbitMqOptions>()
             .Bind(configuration.GetSection(RabbitMqOptions.SectionName))
             .ValidateDataAnnotations()
             .ValidateOnStart();
 
+        services
+        .AddOptions<MassTransitOptions>()
+        .Bind(configuration.GetSection(MassTransitOptions.SectionName))
+        .ValidateOnStart();
+        
         services.AddMassTransit(x =>
         {
+            x.AddConsumer<LancamentoCriadoConsumer>();
+            
             x.UsingRabbitMq((context, cfg) =>
             {
                 var rabbitOptions = context

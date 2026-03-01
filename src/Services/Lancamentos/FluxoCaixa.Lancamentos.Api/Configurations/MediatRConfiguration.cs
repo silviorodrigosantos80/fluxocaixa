@@ -1,7 +1,6 @@
-using MediatR;
+using FluxoCaixa.Lancamentos.Application.Commands.CriarLancamento;
 
-namespace FluxoCaixa.Consolidado.Api.Configurations;
-
+namespace FluxoCaixa.Lancamentos.Api.Configurations;
 public static class MediatRConfiguration
 {
     public static IServiceCollection AddApplication(
@@ -10,7 +9,7 @@ public static class MediatRConfiguration
         services.AddMediatR(cfg =>
         {
             cfg.RegisterServicesFromAssembly(
-                typeof(FluxoCaixa.Consolidado.Application.Commands.ProcessarLancamentoIntegrationCommand).Assembly);
+                typeof(CriarLancamentoCommandHandler).Assembly);
         });
 
         return services;

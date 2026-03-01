@@ -4,9 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = Host.CreateApplicationBuilder(args);
 
-builder.Services.AddDbContext<LancamentosDbContext>(options =>
-    options.UseNpgsql(
-        builder.Configuration.GetConnectionString("Database")));
+builder.Services.AddPersistence(builder.Configuration);
 
 builder.Services.AddMessaging(builder.Configuration);
 
