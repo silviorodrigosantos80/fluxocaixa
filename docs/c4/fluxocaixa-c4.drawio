@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net">
+  <diagram name="C4 - Context">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- User -->
+        <mxCell id="user" value="Usuário Comerciante&#10;(Cliente Externo)" style="rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="100" y="200" width="200" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- System -->
+        <mxCell id="system" value="Sistema FluxoCaixa&#10;Microservices&#10;Event-Driven&#10;Clean Architecture" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="450" y="150" width="350" height="150" as="geometry"/>
+        </mxCell>
+
+        <!-- Keycloak -->
+        <mxCell id="kc" value="Keycloak&#10;Identity Provider&#10;OAuth2 / JWT" style="rounded=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="950" y="200" width="220" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- Connections -->
+        <mxCell edge="1" parent="1" source="user" target="system"/>
+        <mxCell edge="1" parent="1" source="system" target="kc"/>
+      </root>
+    </mxGraphModel>
+  </diagram>
+
+  <diagram name="C4 - Containers">
+    <mxGraphModel dx="1600" dy="1200" grid="1" gridSize="10">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- Gateway -->
+        <mxCell id="gateway" value="API Gateway (YARP)&#10;.NET Reverse Proxy" style="rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="600" y="50" width="300" height="90" as="geometry"/>
+        </mxCell>
+
+        <!-- Lancamentos API -->
+        <mxCell id="lapi" value="Lançamentos API&#10;.NET 8&#10;Clean Architecture&#10;DDD" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="250" y="250" width="300" height="120" as="geometry"/>
+        </mxCell>
+
+        <!-- Lancamentos DB -->
+        <mxCell id="ldb" value="PostgreSQL&#10;Lançamentos DB" style="shape=cylinder;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="250" y="420" width="200" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- Outbox Worker -->
+        <mxCell id="outbox" value="Outbox Publisher Worker&#10;MassTransit" style="rounded=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="600" y="250" width="280" height="120" as="geometry"/>
+        </mxCell>
+
+        <!-- RabbitMQ -->
+        <mxCell id="rabbit" value="RabbitMQ&#10;Event Bus" style="rounded=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="280" width="260" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- Consolidado Worker -->
+        <mxCell id="cworker" value="Consolidado Worker&#10;Consumer + Retry + Idempotência" style="rounded=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="450" width="300" height="120" as="geometry"/>
+        </mxCell>
+
+        <!-- Consolidado API -->
+        <mxCell id="capi" value="Consolidado API&#10;.NET 8&#10;CQRS" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="700" y="650" width="280" height="120" as="geometry"/>
+        </mxCell>
+
+        <!-- Consolidado DB -->
+        <mxCell id="cdb" value="PostgreSQL&#10;Consolidado DB" style="shape=cylinder;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="720" y="820" width="200" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- Keycloak -->
+        <mxCell id="kc2" value="Keycloak&#10;OAuth2 / JWT" style="rounded=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="100" y="50" width="250" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- Connections -->
+        <mxCell edge="1" parent="1" source="gateway" target="lapi"/>
+        <mxCell edge="1" parent="1" source="gateway" target="capi"/>
+        <mxCell edge="1" parent="1" source="lapi" target="ldb"/>
+        <mxCell edge="1" parent="1" source="lapi" target="outbox"/>
+        <mxCell edge="1" parent="1" source="outbox" target="rabbit"/>
+        <mxCell edge="1" parent="1" source="rabbit" target="cworker"/>
+        <mxCell edge="1" parent="1" source="cworker" target="cdb"/>
+        <mxCell edge="1" parent="1" source="capi" target="cdb"/>
+        <mxCell edge="1" parent="1" source="kc2" target="gateway"/>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

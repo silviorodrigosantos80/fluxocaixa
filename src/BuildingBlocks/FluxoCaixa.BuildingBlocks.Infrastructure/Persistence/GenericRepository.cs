@@ -30,4 +30,16 @@ public class GenericRepository<T> : IRepository<T>
     {
         DbSet.Remove(entity);
     }
+
+    public async Task<T?> GetByIdAsync(object id, CancellationToken cancellationToken = default)
+    {
+        return await DbSet.FindAsync(new[] { id }, cancellationToken);
+    }
+
+    public async Task<List<T>> GetAllAsync(CancellationToken cancellationToken = default)
+    {
+        return await DbSet
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
+    }
 }

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net">
+  <diagram name="FluxoCaixa - Full Architecture">
+    <mxGraphModel dx="2000" dy="1400" grid="1" gridSize="10">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- EXTERNAL USER -->
+        <mxCell id="user" value="Usuário Comerciante&#10;HTTP Client / Browser" style="rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="50" y="100" width="220" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- DOCKER GROUP -->
+        <mxCell id="docker" value="Docker Environment" style="swimlane;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="300" y="20" width="1550" height="1150" as="geometry"/>
+        </mxCell>
+
+        <!-- API GATEWAY -->
+        <mxCell id="gateway" value="API Gateway (YARP)&#10;Reverse Proxy&#10;Auth Forwarding" style="rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="docker">
+          <mxGeometry x="600" y="60" width="350" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- KEYCLOAK -->
+        <mxCell id="keycloak" value="Keycloak&#10;OAuth2 / OpenID Connect&#10;JWT Provider&#10;Realm: fluxocaixa" style="rounded=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="docker">
+          <mxGeometry x="80" y="60" width="300" height="120" as="geometry"/>
+        </mxCell>
+
+        <!-- LANCAMENTOS GROUP -->
+        <mxCell id="lanc-group" value="Serviço Lançamentos&#10;Clean Architecture + DDD" style="swimlane;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;" vertex="1" parent="docker">
+          <mxGeometry x="80" y="250" width="600" height="400" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="lanc-api" value="Lançamentos API&#10;.NET 8&#10;Controllers&#10;JWT Validation" style="rounded=1;" vertex="1" parent="lanc-group">
+          <mxGeometry x="40" y="80" width="250" height="100" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="lanc-domain" value="Domain&#10;Aggregate: Lancamento&#10;ValueObject: Valor&#10;DomainEvent" style="rounded=1;" vertex="1" parent="lanc-group">
+          <mxGeometry x="320" y="60" width="240" height="120" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="lanc-outbox" value="Outbox Publisher Worker&#10;MassTransit&#10;Retry" style="rounded=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="lanc-group">
+          <mxGeometry x="150" y="230" width="300" height="100" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="lanc-db" value="PostgreSQL&#10;Lançamentos DB&#10;OutboxMessages" style="shape=cylinder;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="lanc-group">
+          <mxGeometry x="200" y="350" width="200" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- RABBIT -->
+        <mxCell id="rabbit" value="RabbitMQ&#10;Event Bus&#10;Exchange + Queue" style="rounded=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="docker">
+          <mxGeometry x="800" y="400" width="300" height="120" as="geometry"/>
+        </mxCell>
+
+        <!-- CONSOLIDADO GROUP -->
+        <mxCell id="cons-group" value="Serviço Consolidado&#10;CQRS + Idempotência" style="swimlane;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;" vertex="1" parent="docker">
+          <mxGeometry x="1150" y="250" width="600" height="500" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="cons-worker" value="Consolidado Worker&#10;Consumer&#10;Retry + Idempotência" style="rounded=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="cons-group">
+          <mxGeometry x="160" y="80" width="300" height="120" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="cons-domain" value="Domain&#10;Aggregate: SaldoDiario&#10;ProcessedEvents Table" style="rounded=1;" vertex="1" parent="cons-group">
+          <mxGeometry x="160" y="230" width="300" height="120" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="cons-api" value="Consolidado API&#10;Query Endpoints" style="rounded=1;" vertex="1" parent="cons-group">
+          <mxGeometry x="160" y="380" width="300" height="100" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="cons-db" value="PostgreSQL&#10;Consolidado DB" style="shape=cylinder;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="cons-group">
+          <mxGeometry x="420" y="380" width="150" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- CONNECTIONS -->
+        <mxCell edge="1" parent="1" source="user" target="gateway"/>
+        <mxCell edge="1" parent="1" source="gateway" target="lanc-api"/>
+        <mxCell edge="1" parent="1" source="gateway" target="cons-api"/>
+        <mxCell edge="1" parent="1" source="keycloak" target="gateway"/>
+        <mxCell edge="1" parent="1" source="lanc-api" target="lanc-domain"/>
+        <mxCell edge="1" parent="1" source="lanc-api" target="lanc-db"/>
+        <mxCell edge="1" parent="1" source="lanc-domain" target="lanc-outbox"/>
+        <mxCell edge="1" parent="1" source="lanc-outbox" target="rabbit"/>
+        <mxCell edge="1" parent="1" source="rabbit" target="cons-worker"/>
+        <mxCell edge="1" parent="1" source="cons-worker" target="cons-domain"/>
+        <mxCell edge="1" parent="1" source="cons-domain" target="cons-db"/>
+        <mxCell edge="1" parent="1" source="cons-api" target="cons-db"/>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -78,7 +78,9 @@ services:
     image: quay.io/keycloak/keycloak:24.0
     container_name: fluxocaixa-keycloak
     restart: always
-    command: start-dev
+    command:
+      - start-dev
+      - --import-realm
     environment:
       KC_DB: postgres
       KC_DB_URL_HOST: postgres-keycloak
@@ -89,6 +91,8 @@ services:
       KEYCLOAK_ADMIN_PASSWORD: admin
     ports:
       - "8081:8080"
+    volumes:
+      - ./docker/keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
     depends_on:
       - postgres-keycloak
     networks:
