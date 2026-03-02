@@ -12,12 +12,24 @@
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageReference Include="NetArchTest.Rules" Version="1.3.2" />
     <PackageReference Include="xunit" Version="2.5.3" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" />
   </ItemGroup>
 
   <ItemGroup>
     <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Services\Lancamentos\FluxoCaixa.Lancamentos.Domain\FluxoCaixa.Lancamentos.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Services\Lancamentos\FluxoCaixa.Lancamentos.Application\FluxoCaixa.Lancamentos.Application.csproj" />
+    <ProjectReference Include="..\..\src\Services\Lancamentos\FluxoCaixa.Lancamentos.Infrastructure\FluxoCaixa.Lancamentos.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Services\Lancamentos\FluxoCaixa.Lancamentos.Api\FluxoCaixa.Lancamentos.Api.csproj" />
+    <ProjectReference Include="..\..\src\Services\Consolidado\FluxoCaixa.Consolidado.Domain\FluxoCaixa.Consolidado.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Services\Consolidado\FluxoCaixa.Consolidado.Application\FluxoCaixa.Consolidado.Application.csproj" />
+    <ProjectReference Include="..\..\src\Services\Consolidado\FluxoCaixa.Consolidado.Infrastructure\FluxoCaixa.Consolidado.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Services\Consolidado\FluxoCaixa.Consolidado.Api\FluxoCaixa.Consolidado.Api.csproj" />
   </ItemGroup>
 
 </Project>

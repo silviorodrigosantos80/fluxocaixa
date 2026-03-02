@@ -3,7 +3,7 @@ using FluxoCaixa.Consolidado.Application.Commands;
 using MassTransit;
 using MediatR;
 
-namespace FluxoCaixa.Consolidado.Worker.Messaging.Consumers;
+namespace FluxoCaixa.Consolidado.Infrastructure.Messaging.Consumers;
 
 public sealed class LancamentoCriadoConsumer
     : IConsumer<LancamentoCriadoIntegrationEvent>

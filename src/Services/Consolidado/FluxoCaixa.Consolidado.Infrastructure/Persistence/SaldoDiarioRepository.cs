@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using FluxoCaixa.BuildingBlocks.Infrastructure.Persistence;
 using FluxoCaixa.Consolidado.Domain.Entities;
 using FluxoCaixa.Consolidado.Domain.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace FluxoCaixa.Consolidado.Infrastructure.Persistence;
 
@@ -21,7 +22,9 @@ public sealed class SaldoDiarioRepository
         DateOnly data,
         CancellationToken cancellationToken)
     {
-        return await this.DbSet.FindAsync(new { userId, data });
+        return await this.DbSet.FirstOrDefaultAsync(
+            x => x.UserId == userId && x.Data == data,
+            cancellationToken);
     }
 
 }

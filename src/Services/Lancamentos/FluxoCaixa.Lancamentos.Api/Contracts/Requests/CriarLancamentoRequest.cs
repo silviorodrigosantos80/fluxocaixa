@@ -1,4 +1,4 @@
-using FluxoCaixa.Lancamentos.Domain.Enums;
+using FluxoCaixa.BuildingBlocks.Domain.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace FluxoCaixa.Lancamentos.Api.Contracts.Requests;

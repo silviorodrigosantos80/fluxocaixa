@@ -1,8 +1,6 @@
 using FluxoCaixa.BuildingBlocks.Infrastructure.Messaging;
-using FluxoCaixa.Consolidado.Worker.Messaging.Consumers;
+using FluxoCaixa.Consolidado.Infrastructure.Messaging.Consumers;
 using MassTransit;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace FluxoCaixa.Consolidado.Worker.Configurations;

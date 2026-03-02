@@ -1,4 +1,5 @@
 using FluxoCaixa.BuildingBlocks.Domain.Common;
+using FluxoCaixa.BuildingBlocks.Domain.Enums;
 using FluxoCaixa.BuildingBlocks.Domain.Events;
 
 namespace FluxoCaixa.Lancamentos.Domain.Events;
@@ -10,7 +11,7 @@ public sealed class LancamentoCriadoDomainEvent : IDomainEvent
     public Guid LancamentoId { get; }
     public DateTime Data { get; }
     public decimal Valor { get; }
-    public int Tipo { get; }
+    public TipoLancamento Tipo { get; }
     public DateTime OccurredOn { get; }
 
     public LancamentoCriadoDomainEvent(
@@ -19,7 +20,7 @@ public sealed class LancamentoCriadoDomainEvent : IDomainEvent
         Guid lancamentoId,
         DateTime data,
         decimal valor,
-        int tipo)
+        TipoLancamento tipo)
     {
         EventId = eventId;
         UserId = userId;

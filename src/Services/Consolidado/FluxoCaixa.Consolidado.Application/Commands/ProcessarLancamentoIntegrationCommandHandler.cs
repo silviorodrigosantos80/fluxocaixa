@@ -1,4 +1,5 @@
 using FluxoCaixa.BuildingBlocks.Application.Abstractions;
+using FluxoCaixa.BuildingBlocks.Domain.Enums;
 using FluxoCaixa.Consolidado.Domain.Entities;
 using FluxoCaixa.Consolidado.Domain.Repositories;
 using MediatR;
@@ -52,16 +53,27 @@ public sealed class ProcessarLancamentoIntegrationCommandHandler
                 cancellationToken);
         }
 
-        if (request.Tipo == 1)
-            saldo.AplicarCredito(request.Valor);
-        else
-            saldo.AplicarDebito(request.Valor);
-
+        switch(request.Tipo)
+        {
+            case  TipoLancamento.Credito:
+                saldo.AplicarCredito(request.Valor);
+            break;
+            case  TipoLancamento.Debito:
+                saldo.AplicarDebito(request.Valor);
+            break;
+            default:
+                throw new Exception("Tipo de lançamento inválido!");
+        }
+    
         await _processedRepository.AddAsync(
             new ProcessedEvent(request.EventId),
             cancellationToken);
 
         await _unitOfWork
             .SaveChangesAsync(cancellationToken);
+    }
+    private void swith(TipoLancamento tipo)
+    {
+        throw new NotImplementedException();
     }
 }

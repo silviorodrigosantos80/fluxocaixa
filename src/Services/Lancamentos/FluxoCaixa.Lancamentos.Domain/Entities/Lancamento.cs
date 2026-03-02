@@ -1,5 +1,5 @@
 using FluxoCaixa.BuildingBlocks.Domain.Common;
-using FluxoCaixa.Lancamentos.Domain.Enums;
+using FluxoCaixa.BuildingBlocks.Domain.Enums;
 using FluxoCaixa.Lancamentos.Domain.Events;
 using FluxoCaixa.Lancamentos.Domain.ValueObjects;
 
@@ -31,7 +31,7 @@ public sealed class Lancamento : AggregateRoot
                 Id,
                 Data,
                 Valor.Amount,
-                (int)Tipo));
+                Tipo));
     }
 
     public static Lancamento Criar(Guid userId, DateTime data, decimal valor, TipoLancamento tipo)

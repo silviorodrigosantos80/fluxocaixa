@@ -1,3 +1,5 @@
+using FluxoCaixa.BuildingBlocks.Domain.Enums;
+
 namespace FluxoCaixa.BuildingBlocks.Contracts.Events;
 
 public sealed class LancamentoCriadoIntegrationEvent
@@ -7,7 +9,7 @@ public sealed class LancamentoCriadoIntegrationEvent
     public Guid LancamentoId { get; }
     public DateTime Data { get; }
     public decimal Valor { get; }
-    public int Tipo { get; }
+    public TipoLancamento Tipo { get; }
     public DateTime OccurredOn { get; }
 
     public LancamentoCriadoIntegrationEvent(
@@ -16,7 +18,7 @@ public sealed class LancamentoCriadoIntegrationEvent
         Guid lancamentoId,
         DateTime data,
         decimal valor,
-        int tipo,
+        TipoLancamento tipo,
         DateTime occurredOn)
     {
         EventId = eventId;

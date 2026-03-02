@@ -1,3 +1,4 @@
+using FluxoCaixa.BuildingBlocks.Domain.Enums;
 using MediatR;
 
 namespace FluxoCaixa.Consolidado.Application.Commands;
@@ -7,5 +8,5 @@ public sealed record ProcessarLancamentoIntegrationCommand(
     Guid UserId,
     DateTime Data,
     decimal Valor,
-    int Tipo
+    TipoLancamento Tipo
 ) : IRequest;

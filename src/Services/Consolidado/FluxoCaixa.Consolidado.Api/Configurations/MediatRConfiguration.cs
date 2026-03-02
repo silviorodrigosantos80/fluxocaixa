@@ -1,9 +1,10 @@
-using FluxoCaixa.Consolidado.Application.Commands;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using FluxoCaixa.Consolidado.Application.Queries;
-using MediatR;
 
-namespace FluxoCaixa.Consolidado.Worker.Configurations;
-
+namespace FluxoCaixa.Consolidado.Api.Configurations;
 public static class MediatRConfiguration
 {
     public static IServiceCollection AddApplication(
@@ -11,7 +12,7 @@ public static class MediatRConfiguration
     {
         services.AddMediatR(cfg =>
         {
-            cfg.RegisterServicesFromAssembly(typeof(ProcessarLancamentoIntegrationCommand).Assembly);
+            cfg.RegisterServicesFromAssembly(typeof(ObterSaldoDiarioQuery).Assembly);
         });
 
         return services;

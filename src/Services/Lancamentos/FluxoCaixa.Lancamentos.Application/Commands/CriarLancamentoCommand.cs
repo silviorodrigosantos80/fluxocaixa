@@ -1,6 +1,6 @@
 using FluxoCaixa.BuildingBlocks.Application.Abstractions;
 using FluxoCaixa.BuildingBlocks.Application.Results;
-using FluxoCaixa.Lancamentos.Domain.Enums;
+using FluxoCaixa.BuildingBlocks.Domain.Enums;
 
 namespace FluxoCaixa.Lancamentos.Application.Commands.CriarLancamento;
 

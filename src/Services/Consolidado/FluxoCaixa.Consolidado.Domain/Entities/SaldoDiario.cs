@@ -2,7 +2,7 @@ using FluxoCaixa.BuildingBlocks.Domain.Common;
 
 namespace FluxoCaixa.Consolidado.Domain.Entities;
 
-public sealed class SaldoDiario : AggregateRoot
+public sealed class SaldoDiario
 {
     public Guid UserId { get; private set; }
     public DateOnly Data { get; private set; }

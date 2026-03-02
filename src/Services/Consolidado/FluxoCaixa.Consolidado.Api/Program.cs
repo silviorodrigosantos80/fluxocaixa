@@ -11,6 +11,9 @@ builder.Services.AddAuthorization();
 // Persistência
 builder.Services.AddPersistence(builder.Configuration);
 
+// Application
+builder.Services.AddApplication();
+
 // Controllers
 builder.Services.AddControllers();
 
