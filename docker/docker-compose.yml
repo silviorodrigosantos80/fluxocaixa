@@ -80,7 +80,6 @@ services:
     restart: always
     command:
       - start-dev
-      - --import-realm
     environment:
       KC_DB: postgres
       KC_DB_URL_HOST: postgres-keycloak
@@ -91,8 +90,6 @@ services:
       KEYCLOAK_ADMIN_PASSWORD: admin
     ports:
       - "8081:8080"
-    volumes:
-      - ./docker/keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
     depends_on:
       - postgres-keycloak
     networks:
@@ -130,8 +127,9 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       ConnectionStrings__LancamentosConnection: Host=postgres-lancamentos;Port=5432;Database=fluxocaixa_lancamentos;Username=postgres;Password=postgres
       ASPNETCORE_URLS: http://+:5001
+      ASPNETCORE_HTTP_PORTS: ""
       DOTNET_USE_POLLING_FILE_WATCHER: "true"
-      Authentication__Authority: http://192.168.1.3:8081/realms/fluxocaixa
+      Authentication__Authority: http://keycloak:8080/realms/fluxocaixa
       Authentication__Audience: fluxocaixa-api
       Authentication__RequireHttpsMetadata: "false"
     ports:
@@ -181,8 +179,9 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       ConnectionStrings__ConsolidadoConnection: Host=postgres-consolidado;Port=5432;Database=fluxocaixa_consolidado;Username=postgres;Password=postgres
       ASPNETCORE_URLS: http://+:5002
+      ASPNETCORE_HTTP_PORTS: ""
       DOTNET_USE_POLLING_FILE_WATCHER: "true"
-      Authentication__Authority: http://192.168.1.3:8081/realms/fluxocaixa
+      Authentication__Authority: http://keycloak:8080/realms/fluxocaixa
       Authentication__Audience: fluxocaixa-api
       Authentication__RequireHttpsMetadata: "false"
     ports:
@@ -216,6 +215,32 @@ services:
       MassTransit__Retry__IntervalDeltaMs: 500
     networks:
       - fluxocaixa-network
+
+  #-----------------------------
+  # GATEWAY
+  #-----------------------------
+  gateway:
+    build:
+      context: ..
+      dockerfile: src/Services/Gateway/FluxoCaixa.ApiGateway/Dockerfile
+    container_name: fluxocaixa-gateway
+    restart: always
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:5000
+      ASPNETCORE_HTTP_PORTS: ""
+      Authentication__Authority: http://keycloak:8080/realms/fluxocaixa
+      Authentication__Audience: fluxocaixa-api
+      Authentication__RequireHttpsMetadata: "false"
+    ports:
+      - "5000:5000"
+    depends_on:
+      - lancamentos-api
+      - consolidado-api
+      - keycloak
+    networks:
+      - fluxocaixa-network
+
 # -----------------------------
 # VOLUMES (PERSISTÊNCIA)
 # -----------------------------

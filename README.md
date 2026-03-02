@@ -25,6 +25,7 @@ A solução foi construída utilizando:
 - Idempotência
 - Retry Exponencial
 - Banco isolado por serviço
+- Testes unitários
 
 A comunicação entre serviços é assíncrona via mensageria.
 
@@ -143,13 +144,6 @@ Detalhes: `docs/keycloak.md`
 Detalhes: `docs/observabilidade.md`
 
 
-# Outbox Pattern
-
-Garantia de publicação confiável sem transações distribuídas.
-
-Detalhes: `docs/outbox.md`
-
-
 # Como Executar o Projeto
 
 Este guia descreve como subir e testar a aplicação a partir da raiz do projeto (`FluxoCaixa`).
@@ -242,6 +236,7 @@ Isso criará automaticamente:
 - Role `comerciante`
 - Configuração JWT
 
+Detalhes: `docs/keycloak.md`
 ---
 
 # Aplicar Migrations

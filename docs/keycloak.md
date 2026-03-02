@@ -149,7 +149,7 @@ access_token
 ```
 
 Exemplo execução POSTMAN:
-curl --location --request POST 'http://192.168.1.3:8081/realms/fluxocaixa/protocol/openid-connect/token' \
+curl --location --request POST 'http://localhost:8081/realms/fluxocaixa/protocol/openid-connect/token' \
 --header 'Content-Type: application/x-www-form-urlencoded' \
 --data-urlencode 'client_id=fluxocaixa-api' \
 --data-urlencode 'client_secret=8pLZ5tO3IOshGOS7clK1sQnB6qqYypkV' \
